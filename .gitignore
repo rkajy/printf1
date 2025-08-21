@@ -1,0 +1,6 @@
+main.c
+a.out
+"__.SYMDEF SORTED"
+libftprintf.a
+libft/*.o
+libft/libft.a
