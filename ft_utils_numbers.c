@@ -6,17 +6,24 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 15:34:34 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/22 20:41:15 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/22 22:50:47 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static char	*ft_utoa(unsigned int n);
-int			print_integer(va_list *args);
-int			print_unsigned(va_list *args);
-int			print_pointer(va_list *args);
-
+/**
+ * @brief Converts an unsigned integer to a null-terminated string.
+ *
+ * This function takes an unsigned integer and converts it into a string
+ * representation. The resulting string is dynamically allocated and must
+ * be freed by the caller to avoid memory leaks.
+ *
+ * @param n The unsigned integer to convert.
+ * @return A pointer to the dynamically allocated string containing the
+ *         string representation of the number. Returns NULL if memory
+ *         allocation fails.
+ */
 static char	*ft_utoa(unsigned int n)
 {
 	char	buffer[11];
@@ -36,6 +43,17 @@ static char	*ft_utoa(unsigned int n)
 	return (str);
 }
 
+/**
+ * print_integer - Prints an integer to the standard output.
+ * @args: A pointer to a va_list containing the integer to print.
+ *
+ * This function retrieves an integer from the provided va_list, converts it
+ * to a string using the ft_itoa function, and writes the string to the
+ * standard output. The function returns the number of characters written
+ * or -1 if an error occurs (e.g., memory allocation failure or write error).
+ *
+ * Return: The number of characters written on success, or -1 on failure.
+ */
 int	print_integer(va_list *args)
 {
 	int		n;
@@ -56,6 +74,26 @@ int	print_integer(va_list *args)
 	return (count);
 }
 
+/**
+ * @brief Prints an unsigned integer to the standard output.
+ *
+ * This function retrieves an unsigned integer from the provided `va_list`,
+ * converts it to a string representation, and writes it to the standard output.
+ * It returns the number of characters printed or -1 in case of an error.
+ *
+ * @param args A ptr to a `va_list` containing the unsigned integer to print.
+ *
+ * @return The number of characters printed on success, or
+	-1 if an error occurs.
+ *
+ * @note The function dynamically allocates memory for the string representation
+ *       of the nbr using `ft_utoa`. It's the caller's responsibility to ensure
+ *       that `ft_utoa` and `ft_strlen` are implemented correctly.
+ *
+ * @warning If the `write` function fails, the allocated memory is freed,
+	and the
+ *          function returns -1.
+ */
 int	print_unsigned(va_list *args)
 {
 	unsigned int	n;
@@ -82,6 +120,7 @@ int	print_unsigned(va_list *args)
 	free(str);
 	return (count);
 }
+
 static int	check_write_error(int fd, const char *buf, size_t count, int ret)
 {
 	if (write(fd, buf, count) < 0)

@@ -6,7 +6,7 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 21:37:42 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/22 20:18:23 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/22 22:38:33 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 # include <stdarg.h> // va_list, va_start, va_end
 # include <stddef.h> // size_t
 # include <stdint.h> // uintptr_t
+# include <stdio.h>  // printf for testing
 # include <stdlib.h> // malloc, free
 # include <unistd.h> // write
-#include <stdio.h> // printf for testing
 
 # if defined(__linux__)
 #  define PTRNULL "(nil)"
