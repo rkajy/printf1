@@ -6,7 +6,7 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 15:34:34 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/22 18:50:17 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/22 19:09:07 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,13 @@ int	print_integer(t_format *fmt, va_list *args)
 	n = va_arg(*args, int);
 	str = ft_itoa(n);
 	if (!str)
-		return (0);
+		return (-1);
 	count = ft_strlen(str);
-	ft_putstr_fd(str, 1);
+	if(write(1, str, count) < 0)
+	{
+		free(str);
+		return (-1);
+	}
 	free(str);
 	return (count);
 }
@@ -59,7 +63,7 @@ int	print_unsigned(t_format *fmt, va_list *args)
 	unsigned int	n;
 	int				count;
 	char			*str;
-	int i;
+	int				i;
 
 	if (fmt->type != 'u')
 		return (0);
@@ -67,7 +71,7 @@ int	print_unsigned(t_format *fmt, va_list *args)
 	count = 0;
 	str = ft_utoa(n);
 	if (!str)
-		return (0);
+		return (-1);
 	count = ft_strlen(str);
 	i = 0;
 	while (str[i])
@@ -79,7 +83,6 @@ int	print_unsigned(t_format *fmt, va_list *args)
 		}
 		i++;
 	}
-	//ft_putstr_fd(str, 1);
 	free(str);
 	return (count);
 }
@@ -96,11 +99,20 @@ int	print_pointer(t_format *fmt, va_list *args)
 		return (0);
 	ptr = (uintptr_t)va_arg(*args, void *);
 	if (!ptr)
-		return (ft_putstr_fd(PTRNULL, 1), NPTRSIZE);
-	ft_putstr_fd("0x", 1);
+	{
+		if (write(1, PTRNULL, NPTRSIZE) < 0)
+			return (-1);
+		return (NPTRSIZE);
+	}
+	if (write(1, "0x", 2) < 0)
+		return (-1);
 	count = count + 2;
 	if (ptr == 0)
-		return (write(1, "0", 1), count + 1);
+	{
+		if (write(1, "0", 1) < 0)
+			return (-1);
+		return (count + 1);
+	}
 	i = 0;
 	while (ptr)
 	{
@@ -109,7 +121,9 @@ int	print_pointer(t_format *fmt, va_list *args)
 	}
 	count += i;
 	while (--i >= 0)
-		if(write(1, &buffer[i], 1) < 0)
+	{
+		if (write(1, &buffer[i], 1) < 0)
 			return (-1);
+	}
 	return (count);
 }
