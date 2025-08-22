@@ -6,50 +6,74 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 15:34:34 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/21 15:48:21 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/22 13:18:07 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	print_integer(t_format *fmt, va_list *args);
-int	print_unsigned(t_format *fmt, va_list *args);
-int	print_hexadecimal(t_format *fmt, va_list *args);
-int	print_pointer(t_format *fmt, va_list *args);
+static char	*ft_utoa(unsigned int n);
+int			print_integer(t_format *fmt, va_list *args);
+int			print_unsigned(t_format *fmt, va_list *args);
+int			print_hexadecimal(t_format *fmt, va_list *args);
+int			print_pointer(t_format *fmt, va_list *args);
+
+static char	*ft_utoa(unsigned int n)
+{
+	char	buffer[11];
+	int		i;
+	char	*str;
+
+	i = 10;
+	buffer[i] = '\0';
+	if (n == 0)
+		buffer[--i] = '0';
+	while (n > 0)
+	{
+		buffer[--i] = (n % 10) + '0';
+		n /= 10;
+	}
+	str = ft_strdup(&buffer[i]);
+	return (str);
+}
 
 int	print_integer(t_format *fmt, va_list *args)
 {
-	int		num;
+	int		n;
 	int		count;
-	char	sign;
+	char	*str;
 
-	num = va_arg(*args, int);
-	count = 0;
-	sign = (num < 0) ? '-' : '+';
-	if (num < 0)
-		num = -num;
-	if (fmt->flag_plus && sign == '+')
-		write(1, &sign, 1);
-	else if (fmt->flag_space && sign == '+')
-		write(1, " ", 1);
-	count += (sign == '-') ? 1 : 0;
-	// Convert and print the number here (omitted for brevity)
-	// ...
+	if (fmt->type != 'd' && fmt->type != 'i')
+		return (0);
+	n = va_arg(*args, int);
+	str = ft_itoa(n);
+	if (!str)
+		return (0);
+	count = ft_strlen(str);
+	ft_putstr_fd(str, 1);
+	free(str);
 	return (count);
 }
 
 int	print_unsigned(t_format *fmt, va_list *args)
 {
-	unsigned int	num;
+	unsigned int	n;
 	int				count;
+	char			*str;
 
-	num = va_arg(*args, unsigned int);
+	if (fmt->type != 'u')
+		return (0);
+	n = va_arg(*args, unsigned int);
 	count = 0;
-    (void)fmt; // Suppress unused variable warning
-	// Convert and print the unsigned number here (omitted for brevity)
-	// ...
+	str = ft_utoa(n);
+	if (!str)
+		return (0);
+	count = ft_strlen(str);
+	ft_putstr_fd(str, 1);
+	free(str);
 	return (count);
 }
+
 int	print_hexadecimal(t_format *fmt, va_list *args)
 {
 	unsigned int	num;
@@ -57,7 +81,7 @@ int	print_hexadecimal(t_format *fmt, va_list *args)
 
 	num = va_arg(*args, unsigned int);
 	count = 0;
-    (void)fmt; // Suppress unused variable warning
+	(void)fmt; // Suppress unused variable warning
 	// Convert and print the hexadecimal number here (omitted for brevity)
 	// ...
 	return (count);
@@ -65,21 +89,29 @@ int	print_hexadecimal(t_format *fmt, va_list *args)
 
 int	print_pointer(t_format *fmt, va_list *args)
 {
-	void *ptr;
-	int count;
+	uintptr_t	ptr;
+	int			count;
+	char		buffer[16];
+	int			i;
 
-	ptr = va_arg(*args, void *);
 	count = 0;
-    (void)fmt; // Suppress unused variable warning
-
+	if (fmt->type != 'p')
+		return (0);
+	ptr = (uintptr_t)va_arg(*args, void *);
 	if (!ptr)
+		return (ft_putstr_fd(PTRNULL, 1), NPTRSIZE);
+	ft_putstr_fd("0x", 1);
+	count += 2;
+	if (ptr == 0)
+		return (write(1, "0", 1), count + 1);
+	i = 0;
+	while (ptr)
 	{
-		write(1, PTRNULL, NPTRSIZE);
-		return (NPTRSIZE);
+		buffer[i++] = HEX_BASE[ptr % 16];
+		ptr /= 16;
 	}
-
-	// Convert and print the pointer address here (omitted for brevity)
-	// ...
-
+	count += i;
+	while (--i >= 0)
+		write(1, &buffer[i], 1);
 	return (count);
 }
