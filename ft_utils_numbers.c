@@ -6,7 +6,7 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 15:34:34 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/22 13:18:07 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/22 18:50:17 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 static char	*ft_utoa(unsigned int n);
 int			print_integer(t_format *fmt, va_list *args);
 int			print_unsigned(t_format *fmt, va_list *args);
-int			print_hexadecimal(t_format *fmt, va_list *args);
 int			print_pointer(t_format *fmt, va_list *args);
 
 static char	*ft_utoa(unsigned int n)
@@ -60,6 +59,7 @@ int	print_unsigned(t_format *fmt, va_list *args)
 	unsigned int	n;
 	int				count;
 	char			*str;
+	int i;
 
 	if (fmt->type != 'u')
 		return (0);
@@ -69,21 +69,18 @@ int	print_unsigned(t_format *fmt, va_list *args)
 	if (!str)
 		return (0);
 	count = ft_strlen(str);
-	ft_putstr_fd(str, 1);
+	i = 0;
+	while (str[i])
+	{
+		if (write(1, &str[i], 1) < 0)
+		{
+			free(str);
+			return (-1);
+		}
+		i++;
+	}
+	//ft_putstr_fd(str, 1);
 	free(str);
-	return (count);
-}
-
-int	print_hexadecimal(t_format *fmt, va_list *args)
-{
-	unsigned int	num;
-	int				count;
-
-	num = va_arg(*args, unsigned int);
-	count = 0;
-	(void)fmt; // Suppress unused variable warning
-	// Convert and print the hexadecimal number here (omitted for brevity)
-	// ...
 	return (count);
 }
 
@@ -101,7 +98,7 @@ int	print_pointer(t_format *fmt, va_list *args)
 	if (!ptr)
 		return (ft_putstr_fd(PTRNULL, 1), NPTRSIZE);
 	ft_putstr_fd("0x", 1);
-	count += 2;
+	count = count + 2;
 	if (ptr == 0)
 		return (write(1, "0", 1), count + 1);
 	i = 0;
@@ -112,6 +109,7 @@ int	print_pointer(t_format *fmt, va_list *args)
 	}
 	count += i;
 	while (--i >= 0)
-		write(1, &buffer[i], 1);
+		if(write(1, &buffer[i], 1) < 0)
+			return (-1);
 	return (count);
 }

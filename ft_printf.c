@@ -7,28 +7,26 @@ static int	handle_format_specifier(t_format *fmt, va_list *args,
 
 	count = 0;
 	if (fmt->type == 'c')
-		count += print_char(fmt, args);
+		count = print_char(fmt, args);
 	else if (fmt->type == 's')
-		count += print_string(fmt, args);
+		count = print_string(fmt, args);
 	else if (fmt->type == 'd' || fmt->type == 'i')
-		count += print_integer(fmt, args);
+		count = print_integer(fmt, args);
 	else if (fmt->type == 'u')
-		count += print_unsigned(fmt, args);
+		count = print_unsigned(fmt, args);
 	else if (fmt->type == 'x' || fmt->type == 'X')
 	{
-		count += print_hexadecimal(fmt, args);
-		printf("\ntype %c ", fmt->type);
-		printf("count = %d ", count);
+		count = print_hexadecimal(fmt, args);
 	}
 	else if (fmt->type == 'p')
-		count += print_pointer(fmt, args);
+		count = print_pointer(fmt, args);
 	else if (fmt->type == '%')
-		count += print_percent(fmt);
+		count = print_percent(fmt);
 	else
 	{
 		write(1, "%", 1);
 		write(1, *format, 1);
-		count += 2;
+		count = 2;
 	}
 	return (count);
 }
@@ -43,6 +41,12 @@ static int	write_count(char c, int count)
 static int	process_format(const char *format, va_list *args, int count,
 		t_format *fmt)
 {
+	int total;
+	int result;
+
+	total = 0;
+	result = 0;
+
 	while (*format)
 	{
 		if (*format == '%')
@@ -51,18 +55,29 @@ static int	process_format(const char *format, va_list *args, int count,
 			if (*format)
 			{
 				fmt->type = *format;
-				count += handle_format_specifier(fmt, args, &format);
+				
+				result = handle_format_specifier(fmt, args, &format);
+				if (result < 0)
+				{
+					return (-1);
+				}
+				count += result;
 				format++;
 			}
 			else
 			{
-				count = write_count(' ', count);
+				result = write_count(' ', count);
+				if (result < 0)
+					return (-1);
+				count = result;
 				break ;
 			}
 		}
 		else
 		{
-			write(1, format, 1);
+			result = write(1, format, 1);
+			if (result < 0)
+				return (-1);
 			count++;
 			format++;
 		}
