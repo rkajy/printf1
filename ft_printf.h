@@ -6,7 +6,7 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 21:37:42 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/22 20:13:36 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/22 20:18:23 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdlib.h> // malloc, free
 # include <unistd.h> // write
 #include <stdio.h> // printf for testing
+
 # if defined(__linux__)
 #  define PTRNULL "(nil)"
 #  define NPTRSIZE 5
@@ -42,7 +43,7 @@ int			ft_printf(const char *format, ...);
 
 // specifier functions
 int			print_char(va_list *args);
-int			print_string(t_format *fmt, va_list *args);
+int			print_string(va_list *args);
 int			print_integer(va_list *args);
 int			print_unsigned(va_list *args);
 int			print_hexadecimal(t_format *fmt, va_list *args);

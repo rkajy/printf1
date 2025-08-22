@@ -9,7 +9,7 @@ static int	handle_format_specifier(t_format *fmt, va_list *args,
 	if (fmt->type == 'c')
 		count = print_char(args);
 	else if (fmt->type == 's')
-		count = print_string(fmt, args);
+		count = print_string(args);
 	else if (fmt->type == 'd' || fmt->type == 'i')
 		count = print_integer(args);
 	else if (fmt->type == 'u')
