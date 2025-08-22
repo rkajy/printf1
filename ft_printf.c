@@ -29,11 +29,11 @@ static int	handle_format_specifier(t_format *fmt, va_list *args,
 	return (count);
 }
 
-static int	write_count(char c, int count)
+static int check_write_error(int fd, const char *buf, size_t count, int ret)
 {
-	write(1, &c, 1);
-	count++;
-	return (count);
+	if (write(fd, buf, count) < 0)
+		return (-1);
+	return (ret);
 }
 
 static int	process_format(const char *format, va_list *args, int count,
@@ -46,8 +46,7 @@ static int	process_format(const char *format, va_list *args, int count,
 	{
 		if (*format == '%')
 		{
-			format++;
-			if (*format)
+			if (*format++)
 			{
 				fmt->type = *format;
 				result = handle_format_specifier(fmt, args, &format);
@@ -58,17 +57,13 @@ static int	process_format(const char *format, va_list *args, int count,
 			}
 			else
 			{
-				result = write_count(' ', count);
-				if (result < 0)
-					return (-1);
-				count = result;
+				count  = check_write_error(1, " ", 1, count);
 				break ;
 			}
 		}
 		else
 		{
-			result = write(1, format, 1);
-			if (result < 0)
+			if (write(1, format, 1) < 0)
 				return (-1);
 			count++;
 			format++;

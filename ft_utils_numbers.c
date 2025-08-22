@@ -6,7 +6,7 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 15:34:34 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/22 20:08:12 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/22 20:41:15 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	print_integer(va_list *args)
 	if (!str)
 		return (-1);
 	count = ft_strlen(str);
-	if(write(1, str, count) < 0)
+	if (write(1, str, count) < 0)
 	{
 		free(str);
 		return (-1);
@@ -82,12 +82,36 @@ int	print_unsigned(va_list *args)
 	free(str);
 	return (count);
 }
-static int check_write_error(int fd, const char *buf, size_t count, int ret)
+static int	check_write_error(int fd, const char *buf, size_t count, int ret)
 {
 	if (write(fd, buf, count) < 0)
 		return (-1);
 	return (ret);
 }
+
+/**
+ * print_pointer - Prints a pointer address in hexadecimal format.
+ * @args: A pointer to a va_list containing the arguments.
+ *
+ * This function retrieves a pointer from the provided va_list, converts it
+ * to its hexadecimal representation, and writes it to the standard output.
+ * The output is prefixed with "0x" to indicate that it is a hexadecimal value.
+ * If the pointer is NULL, a predefined string (PTRNULL) is written instead.
+ *
+ * Return: The total number of characters written on success, or -1 if a
+ *         write error occurs.
+ *
+ * Notes:
+ * - The function uses a buffer to store the hexadecimal representation of
+ *   the pointer address in reverse order before writing it to the output.
+ * - The function handles NULL pointers by writing a specific string and
+ *   returning the appropriate count.
+ * - The function assumes that HEX_BASE is a predefined string containing
+ *   the hexadecimal digits ('0123456789abcdef').
+ * - The function uses check_write_error to handle write errors and calculate
+ *   the total character count in certain cases.
+ */
+
 int	print_pointer(va_list *args)
 {
 	uintptr_t	ptr;
@@ -98,12 +122,12 @@ int	print_pointer(va_list *args)
 	count = 0;
 	ptr = (uintptr_t)va_arg(*args, void *);
 	if (!ptr)
-		return check_write_error(1, PTRNULL, NPTRSIZE, NPTRSIZE);
+		return (check_write_error(1, PTRNULL, NPTRSIZE, NPTRSIZE));
 	if (write(1, "0x", 2) < 0)
 		return (-1);
 	count = count + 2;
 	if (ptr == 0)
-		return check_write_error(1, "0", 1, count + 1);
+		return (check_write_error(1, "0", 1, count + 1));
 	i = 0;
 	while (ptr)
 	{
