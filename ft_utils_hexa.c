@@ -6,7 +6,7 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 12:47:04 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/22 17:28:47 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/22 20:00:26 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,10 @@ int	print_hexadecimal(t_format *fmt, va_list *args)
 	int				i;
 	int				count;
 	const char		*base;
-	if (fmt->type == 'x')
-		base = HEX_BASE;
-	else if (fmt->type == 'X')
+
+	base = HEX_BASE;
+	if (fmt->type == 'X')
 		base = HEX_BASE_CAPITAL;
-	else
-		return (0);
 	n = va_arg(*args, unsigned int);
 	if (n == 0)
 		return (write(1, "0", 1));
@@ -36,9 +34,7 @@ int	print_hexadecimal(t_format *fmt, va_list *args)
 	}
 	count = i;
 	while (i-- > 0)
-	{
-		if(write(1, &buffer[i], 1) < 0)
+		if (write(1, &buffer[i], 1) < 0)
 			return (-1);
-	}
 	return (count);
 }

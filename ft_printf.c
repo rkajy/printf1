@@ -7,19 +7,17 @@ static int	handle_format_specifier(t_format *fmt, va_list *args,
 
 	count = 0;
 	if (fmt->type == 'c')
-		count = print_char(fmt, args);
+		count = print_char(args);
 	else if (fmt->type == 's')
 		count = print_string(fmt, args);
 	else if (fmt->type == 'd' || fmt->type == 'i')
-		count = print_integer(fmt, args);
+		count = print_integer(args);
 	else if (fmt->type == 'u')
-		count = print_unsigned(fmt, args);
+		count = print_unsigned(args);
 	else if (fmt->type == 'x' || fmt->type == 'X')
-	{
 		count = print_hexadecimal(fmt, args);
-	}
 	else if (fmt->type == 'p')
-		count = print_pointer(fmt, args);
+		count = print_pointer(args);
 	else if (fmt->type == '%')
 		count = print_percent(fmt);
 	else
@@ -41,12 +39,9 @@ static int	write_count(char c, int count)
 static int	process_format(const char *format, va_list *args, int count,
 		t_format *fmt)
 {
-	int total;
-	int result;
+	int	result;
 
-	total = 0;
 	result = 0;
-
 	while (*format)
 	{
 		if (*format == '%')
@@ -55,12 +50,9 @@ static int	process_format(const char *format, va_list *args, int count,
 			if (*format)
 			{
 				fmt->type = *format;
-				
 				result = handle_format_specifier(fmt, args, &format);
 				if (result < 0)
-				{
 					return (-1);
-				}
 				count += result;
 				format++;
 			}

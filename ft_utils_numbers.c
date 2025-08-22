@@ -6,16 +6,16 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 15:34:34 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/22 19:09:07 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/22 20:08:12 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
 static char	*ft_utoa(unsigned int n);
-int			print_integer(t_format *fmt, va_list *args);
-int			print_unsigned(t_format *fmt, va_list *args);
-int			print_pointer(t_format *fmt, va_list *args);
+int			print_integer(va_list *args);
+int			print_unsigned(va_list *args);
+int			print_pointer(va_list *args);
 
 static char	*ft_utoa(unsigned int n)
 {
@@ -36,14 +36,12 @@ static char	*ft_utoa(unsigned int n)
 	return (str);
 }
 
-int	print_integer(t_format *fmt, va_list *args)
+int	print_integer(va_list *args)
 {
 	int		n;
 	int		count;
 	char	*str;
 
-	if (fmt->type != 'd' && fmt->type != 'i')
-		return (0);
 	n = va_arg(*args, int);
 	str = ft_itoa(n);
 	if (!str)
@@ -58,15 +56,13 @@ int	print_integer(t_format *fmt, va_list *args)
 	return (count);
 }
 
-int	print_unsigned(t_format *fmt, va_list *args)
+int	print_unsigned(va_list *args)
 {
 	unsigned int	n;
 	int				count;
 	char			*str;
 	int				i;
 
-	if (fmt->type != 'u')
-		return (0);
 	n = va_arg(*args, unsigned int);
 	count = 0;
 	str = ft_utoa(n);
@@ -86,8 +82,13 @@ int	print_unsigned(t_format *fmt, va_list *args)
 	free(str);
 	return (count);
 }
-
-int	print_pointer(t_format *fmt, va_list *args)
+static int check_write_error(int fd, const char *buf, size_t count, int ret)
+{
+	if (write(fd, buf, count) < 0)
+		return (-1);
+	return (ret);
+}
+int	print_pointer(va_list *args)
 {
 	uintptr_t	ptr;
 	int			count;
@@ -95,24 +96,14 @@ int	print_pointer(t_format *fmt, va_list *args)
 	int			i;
 
 	count = 0;
-	if (fmt->type != 'p')
-		return (0);
 	ptr = (uintptr_t)va_arg(*args, void *);
 	if (!ptr)
-	{
-		if (write(1, PTRNULL, NPTRSIZE) < 0)
-			return (-1);
-		return (NPTRSIZE);
-	}
+		return check_write_error(1, PTRNULL, NPTRSIZE, NPTRSIZE);
 	if (write(1, "0x", 2) < 0)
 		return (-1);
 	count = count + 2;
 	if (ptr == 0)
-	{
-		if (write(1, "0", 1) < 0)
-			return (-1);
-		return (count + 1);
-	}
+		return check_write_error(1, "0", 1, count + 1);
 	i = 0;
 	while (ptr)
 	{
@@ -121,9 +112,7 @@ int	print_pointer(t_format *fmt, va_list *args)
 	}
 	count += i;
 	while (--i >= 0)
-	{
 		if (write(1, &buffer[i], 1) < 0)
 			return (-1);
-	}
 	return (count);
 }
