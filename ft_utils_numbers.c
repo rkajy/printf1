@@ -6,7 +6,7 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 15:34:34 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/22 22:50:47 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/24 18:39:32 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	print_integer(va_list *args)
 	if (!str)
 		return (-1);
 	count = ft_strlen(str);
-	if (write(1, str, count) < 0)
+	if (write(1, str, count) != count)
 	{
 		free(str);
 		return (-1);
@@ -99,7 +99,6 @@ int	print_unsigned(va_list *args)
 	unsigned int	n;
 	int				count;
 	char			*str;
-	int				i;
 
 	n = va_arg(*args, unsigned int);
 	count = 0;
@@ -107,15 +106,10 @@ int	print_unsigned(va_list *args)
 	if (!str)
 		return (-1);
 	count = ft_strlen(str);
-	i = 0;
-	while (str[i])
+	if (write(1, str, count) != count)
 	{
-		if (write(1, &str[i], 1) < 0)
-		{
-			free(str);
-			return (-1);
-		}
-		i++;
+		free(str);
+		return (-1);
 	}
 	free(str);
 	return (count);
