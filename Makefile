@@ -6,7 +6,7 @@
 #    By: radandri <radandri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/11 18:42:51 by radandri          #+#    #+#              #
-#    Updated: 2025/08/24 18:29:53 by radandri         ###   ########.fr        #
+#    Updated: 2025/08/24 20:53:14 by radandri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,17 +25,12 @@ OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-# build libft
-	$(MAKE) -C $(LIBFT_DIR)
-# create the archive libftprint.a
+$(NAME): $(OBJS) $(LIBFT)
+	cp $(LIBFT) $(NAME)
 	ar rcs $(NAME) $(OBJS)
-# extract libft.o files
-	ar -x $(LIBFT)
-# add them into libftprint.a archive
-	ar rcs $(NAME) *.o
-# clean up extracted libft.o files
-	rm -f *.o
+
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
 
 # compile the test program
 # $(TEST): $(OBJS) main.o
