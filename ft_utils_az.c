@@ -6,7 +6,7 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 15:33:06 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/24 10:35:50 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/24 11:04:22 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	print_char(va_list *args)
 	return (ft_putchar_fd(c, 1));
 }
 
-
 /**
  * @brief Prints a string to the standard output.
  *
@@ -57,9 +56,8 @@ int	print_string(va_list *args)
 	return (ft_putstr_fd(str, 1));
 }
 
-
 /**
- * @brief Prints a percent sign ('%') to the standard output if the format type is '%'.
+ * @brief Prints a sign ('%') to the standard output if the format type is '%'.
  *
  * This function checks if the format type in the provided `t_format` structure
  * is a percent sign ('%'). If it is, the function writes the '%' character to
@@ -67,7 +65,7 @@ int	print_string(va_list *args)
  * printing anything.
  *
  * @param fmt A pointer to a `t_format` structure containing the format type.
- * 
+ *
  * @return The number of characters printed (1 if '%' is printed, 0 otherwise).
  */
 int	print_percent(t_format *fmt)

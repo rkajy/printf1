@@ -6,7 +6,7 @@
 /*   By: radandri <radandri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 22:38:48 by radandri          #+#    #+#             */
-/*   Updated: 2025/08/22 22:52:55 by radandri         ###   ########.fr       */
+/*   Updated: 2025/08/24 11:02:24 by radandri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,23 @@
 /**
  * handle_format_specifier - Handles the processing of a format specifier
  *                           in a custom printf implementation.
- * 
+ *
  * @fmt: A pointer to a t_format structure containing the format specifier
  *       details (e.g., type, flags, width, precision).
  * @args: A pointer to the va_list containing the variable arguments to be
  *        processed.
  * @format: A pointer to the current position in the format string being
  *          processed.
- * 
+ *
  * Return: The number of characters printed as a result of processing the
  *         format specifier.
- * 
+ *
  * Description:
  * This function determines the type of the format specifier (e.g., 'c', 's',
  * 'd', 'x', etc.) and calls the appropriate helper function to handle the
- * specific type. If the format specifier is invalid, it prints the '%' 
+ * specific type. If the format specifier is invalid, it prints the '%'
  * character followed by the invalid specifier and returns a count of 2.
- * 
+ *
  * Supported format specifiers:
  * - 'c': Prints a single character.
  * - 's': Prints a string.
@@ -40,7 +40,7 @@
  * - 'x' or 'X': Prints a hexadecimal number (lowercase or uppercase).
  * - 'p': Prints a pointer address.
  * - '%': Prints a literal '%' character.
- * 
+ *
  * If the format specifier is not recognized, the function writes the '%'
  * character and the unrecognized specifier to the output.
  */
