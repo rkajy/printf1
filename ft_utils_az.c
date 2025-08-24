@@ -47,9 +47,7 @@ int	print_char(va_list *args)
 int	print_string(va_list *args)
 {
 	char	*str;
-	int		i;
 
-	i = 0;
 	str = va_arg(*args, char *);
 	if (!str)
 		str = "(null)";
